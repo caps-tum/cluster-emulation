@@ -1,0 +1,37 @@
+ClusterName=DockerCluster
+SlurmUser=root
+SlurmctldPort=7002
+SlurmctldTimeout=300
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdPort=7003
+SlurmdTimeout=300
+SlurmdLogFile=/var/log/slurmd.log
+# fan out when creating TBONs
+TreeWidth=50
+#SlurmctldDebug=debug
+
+# deepsea selection
+SchedulerType=sched/deepsea
+#SelectType=select/deepsea
+#SwitchType=switch/deepsea
+# the launch/slurm plugin is broken upstream; no point in wrapping it at this moment
+#LaunchType=launch/deepsea
+#MpiDefault=deepsea
+
+# backfill scheduler settings
+SchedulerParameters=sched_interval=2,bf_interval=1,bf_max_time=5,bf_resolution=1
+
+# non-deepsea plugins
+AuthType=auth/munge
+CredType=cred/munge
+#ProctrackType=proctrack/cgroup
+ProctrackType=proctrack/linuxproc
+#TaskPlugin=task/cgroup
+TaskPlugin=task/none
+#JobacctGatherType=jobacct_gather/cgroup
+JobacctGatherType=jobacct_gather/none
+
+# The default partition is defined without knowing the hostfile
+PartitionName=DEFAULT State=UP OverSubscribe=NO
+
+# Below partition data is automatically generated based on a hostfile

@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name=test-hostfile   
+#SBATCH --ntasks=16               
+#SBATCH --time=00:05:00          
+#SBATCH --output=output-%j.log  
+
+pwd; hostname; date
+
+echo "nodelist of this job (regex): ${SLURM_JOB_NODELIST}"
+scontrol show hostname ${SLURM_JOB_NODELIST} > hostfile-${SLURM_JOB_ID}.txt
+echo "Generated hostfile-${SLURM_JOB_ID}.txt:"
+cat hostfile-${SLURM_JOB_ID}.txt
+
+date

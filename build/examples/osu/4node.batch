@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name=osu-4node
+#SBATCH --ntasks=32
+#SBATCH --nodes=4
+#SBATCH --time=00:05:00          
+#SBATCH --output=output-osu-4node-%j.log  
+
+pwd; hostname; date
+echo "nodelist of this job (regex): ${SLURM_JOB_NODELIST}"
+
+srun -n 2 ./pt2pt/osu_bibw	
+srun -n 2 ./pt2pt/osu_latency     
+srun -n 2 ./pt2pt/osu_latency_mt  
+srun -n 32 ./pt2pt/osu_multi_lat
+srun -n 2 ./pt2pt/osu_bw	
+srun -n 2 ./pt2pt/osu_latency_mp  
+srun -n 32 ./pt2pt/osu_mbw_mr
+
+date

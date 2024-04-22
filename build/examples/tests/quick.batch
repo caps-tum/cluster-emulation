@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=filler-1
+#SBATCH --ntasks=8
+#SBATCH --time=00:00:25
+#SBATCH --output=output-%j.log  
+
+#pwd; hostname; date
+
+#echo "nodelist of this job (regex): ${SLURM_JOB_NODELIST}"
+#scontrol show hostname ${SLURM_JOB_NODELIST} > hostfile-${SLURM_JOB_ID}.txt
+#echo "Generated hostfile-${SLURM_JOB_ID}.txt:"
+#cat hostfile-${SLURM_JOB_ID}.txt
+
+drun -n 12 init_finalize
+
+#date

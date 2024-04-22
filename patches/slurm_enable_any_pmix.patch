@@ -1,0 +1,292 @@
+diff --git a/auxdir/x_ac_pmix.m4 b/auxdir/x_ac_pmix.m4
+index 0fabec463c..df35b2ae2e 100755
+--- a/auxdir/x_ac_pmix.m4
++++ b/auxdir/x_ac_pmix.m4
+@@ -15,9 +15,7 @@ AC_DEFUN([X_AC_PMIX],
+   _x_ac_pmix_dirs="/usr /usr/local"
+   _x_ac_pmix_libs="lib64 lib"
+ 
+-  _x_ac_pmix_v2_found="0"
+-  _x_ac_pmix_v3_found="0"
+-  _x_ac_pmix_v4_found="0"
++  _x_ac_pmix_found="0"
+ 
+   AC_ARG_WITH(
+     [pmix],
+@@ -57,110 +55,31 @@ AC_DEFUN([X_AC_PMIX],
+               continue
+             fi
+ 
+-            _x_ac_pmix_version="0"
+-            AC_PREPROC_IFELSE([AC_LANG_PROGRAM([
+-              #include <pmix_version.h>
+-              #if (PMIX_VERSION_MAJOR != 4L)
+-                #error "not version 4"
+-              #endif
+-            ], [ ] )],
+-            [ _x_ac_pmix_version="4" ],
+-	    [ AC_PREPROC_IFELSE([AC_LANG_PROGRAM([
+-              #include <pmix_version.h>
+-              #if (PMIX_VERSION_MAJOR != 3L)
+-                #error "not version 3"
+-              #endif
+-            ], [ ] )],
+-            [ _x_ac_pmix_version="3" ],
+-	    [ AC_PREPROC_IFELSE([AC_LANG_PROGRAM([
+-              #include<pmix_server.h>
+-              #if (PMIX_VERSION_MAJOR != 2L)
+-                #error "not version 2"
+-              #endif
+-            ], [ ] )],
+-            [ _x_ac_pmix_version="2" ] )
+-            ])
+-            ])
+-
+             CPPFLAGS="$_x_ac_pmix_cppflags_save"
+             LIBS="$_x_ac_pmix_libs_save"
+ 
+             m4_define([err_pmix],[was already found in one of the previous paths])
+ 
+-            if [test "$_x_ac_pmix_version" = "2"]; then
+-              if [test "$_x_ac_pmix_v2_found" = "1" ]; then
+-                m4_define([err_pmix_v2],[error processing $x_ac_cv_pmix_libdir: PMIx v2.x])
+-                AC_MSG_ERROR(err_pmix_v2 err_pmix)
+-              fi
+-              _x_ac_pmix_v2_found="1"
+-              PMIX_V2_CPPFLAGS="-I$x_ac_cv_pmix_dir/include"
++              _x_ac_pmix_found="1"
++              PMIX_CPPFLAGS="-I$x_ac_cv_pmix_dir/include -DPMIXP_LIBPATH=\\\"$x_ac_cv_pmix_libdir\\\""
+               if test "$ac_with_rpath" = "yes"; then
+-                PMIX_V2_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_pmix_libdir -L$x_ac_cv_pmix_libdir"
+-              else
+-                PMIX_V2_CPPFLAGS=$PMIX_V2_CPPFLAGS" -DPMIXP_V2_LIBPATH=\\\"$x_ac_cv_pmix_libdir\\\""
++                PMIX_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_pmix_libdir -L$x_ac_cv_pmix_libdir"
+               fi
+               # We don't want to search the other lib after we found it in
+               # one place or we might report a false duplicate if lib64 is a
+               # symlink of lib.
+               break
+-            fi
+-
+-            if [test "$_x_ac_pmix_version" = "3"]; then
+-              if [test "$_x_ac_pmix_v3_found" = "1" ]; then
+-                m4_define([err_pmix_v3],[error processing $x_ac_cv_pmix_libdir: PMIx v3.x])
+-                AC_MSG_ERROR(err_pmix_v3 err_pmix)
+-              fi
+-              _x_ac_pmix_v3_found="1"
+-              PMIX_V3_CPPFLAGS="-I$x_ac_cv_pmix_dir/include"
+-              if test "$ac_with_rpath" = "yes"; then
+-                PMIX_V3_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_pmix_libdir -L$x_ac_cv_pmix_libdir"
+-              else
+-                PMIX_V3_CPPFLAGS=$PMIX_V3_CPPFLAGS" -DPMIXP_V3_LIBPATH=\\\"$x_ac_cv_pmix_libdir\\\""
+-              fi
+-              # We don't want to search the other lib after we found it in
+-              # one place or we might report a false duplicate if lib64 is a
+-              # symlink of lib.
+-              break
+-            fi
+-
+-	    # V4 does not compile with Slurm as of this comment. When and if
+-	    # it does in the future just uncomment this block below and v4
+-	    # will be allowed to compile. We are waiting on PMIx to make this
+-	    # happen. If v4 is important to you please contact them instead of
+-	    # opening a bug with SchedMD.
+ 
+-            # if [test "$_x_ac_pmix_version" = "4"]; then
+-            #   if [test "$_x_ac_pmix_v4_found" = "1" ]; then
+-            #     m4_define([err_pmix_v4],[error processing $x_ac_cv_pmix_libdir: PMIx v4.x])
+-            #     AC_MSG_ERROR(err_pmix_v4 err_pmix)
+-            #   fi
+-            #   _x_ac_pmix_v4_found="1"
+-            #   PMIX_V4_CPPFLAGS="-I$x_ac_cv_pmix_dir/include"
+-            #   if test "$ac_with_rpath" = "yes"; then
+-            #     PMIX_V4_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_pmix_libdir -L$x_ac_cv_pmix_libdir"
+-            #   else
+-            #     PMIX_V4_CPPFLAGS=$PMIX_V4_CPPFLAGS" -DPMIXP_V4_LIBPATH=\\\"$x_ac_cv_pmix_libdir\\\""
+-            #   fi
+-            #   # We don't want to search the other lib after we found it in
+-            #   # one place or we might report a false duplicate if lib64 is a
+-            #   # symlink of lib.
+-            #   break
+-            # fi
+           done
+         done
+       ])
+ 
+     AC_DEFINE(HAVE_PMIX, 1, [Define to 1 if pmix library found])
+ 
+-    AC_SUBST(PMIX_V2_CPPFLAGS)
+-    AC_SUBST(PMIX_V2_LDFLAGS)
+-    AC_SUBST(PMIX_V3_CPPFLAGS)
+-    AC_SUBST(PMIX_V3_LDFLAGS)
+-    AC_SUBST(PMIX_V4_CPPFLAGS)
+-    AC_SUBST(PMIX_V4_LDFLAGS)
++    AC_SUBST(PMIX_CPPFLAGS)
++    AC_SUBST(PMIX_LDFLAGS)
+ 
+-    if test $_x_ac_pmix_v2_found = 0 &&
+-          test $_x_ac_pmix_v3_found = 0 && test $_x_ac_pmix_v4_found = 0; then
++    if test $_x_ac_pmix_found = 0 ; then
+       if test -z "$with_pmix"; then
+         AC_MSG_WARN([unable to locate pmix installation])
+       else
+@@ -169,10 +88,5 @@ AC_DEFUN([X_AC_PMIX],
+     fi
+   fi
+ 
+-  AM_CONDITIONAL(HAVE_PMIX,
+-                [test $_x_ac_pmix_v2_found = "1"] ||
+-                [test $_x_ac_pmix_v3_found = "1"] )
+-  AM_CONDITIONAL(HAVE_PMIX_V2, [test $_x_ac_pmix_v2_found = "1"])
+-  AM_CONDITIONAL(HAVE_PMIX_V3, [test $_x_ac_pmix_v3_found = "1"])
+-  AM_CONDITIONAL(HAVE_PMIX_V4, [test $_x_ac_pmix_v4_found = "1"])
++  AM_CONDITIONAL(HAVE_PMIX, [test $_x_ac_pmix_found = "1"])
+ ])
+diff --git a/src/plugins/mpi/pmix/Makefile.am b/src/plugins/mpi/pmix/Makefile.am
+index 57bf36d8b7..1509062578 100755
+--- a/src/plugins/mpi/pmix/Makefile.am
++++ b/src/plugins/mpi/pmix/Makefile.am
+@@ -26,61 +26,9 @@ endif
+ pmix_ldflags = $(PLUGIN_FLAGS) $(HWLOC_LDFLAGS) $(UCX_LDFLAGS)
+ pmix_libadd = $(HWLOC_LIBS) $(UCX_LIBS)
+ 
+-# pkglib_v#dir is needed in each one of the below because of the way we
+-# use pkglib_v#_LTLIBRARIES even though it is the same for each one it still
+-# needs to be defined.
+-
+-if HAVE_PMIX_V2
+-
+-pkglib_v2dir=$(pkglibdir)
+-pkglib_v2_LTLIBRARIES = mpi_pmix_v2.la
+-mpi_pmix_v2_la_SOURCES = $(pmix_src) pmixp_client_v2.c
+-mpi_pmix_v2_la_LIBADD = $(pmix_libadd)
+-mpi_pmix_v2_la_LDFLAGS = $(pmix_ldflags) $(PMIX_V2_LDFLAGS)
+-mpi_pmix_v2_la_CPPFLAGS = $(AM_CPPFLAGS) $(PMIX_V2_CPPFLAGS) -DHAVE_PMIX_VER=2
+-
+-endif
+-
+-if HAVE_PMIX_V3
+-
+-pkglib_v3dir=$(pkglibdir)
+-pkglib_v3_LTLIBRARIES = mpi_pmix_v3.la
+-mpi_pmix_v3_la_SOURCES = $(pmix_src) pmixp_client_v2.c
+-mpi_pmix_v3_la_LIBADD = $(pmix_libadd)
+-mpi_pmix_v3_la_LDFLAGS = $(pmix_ldflags) $(PMIX_V3_LDFLAGS)
+-mpi_pmix_v3_la_CPPFLAGS = $(AM_CPPFLAGS) $(PMIX_V3_CPPFLAGS) -DHAVE_PMIX_VER=3
+-
+-endif
+-
+-if HAVE_PMIX_V4
+-
+-pkglib_v4dir=$(pkglibdir)
+-pkglib_v4_LTLIBRARIES = mpi_pmix_v4.la
+-mpi_pmix_v4_la_SOURCES = $(pmix_src) pmixp_client_v2.c
+-mpi_pmix_v4_la_LIBADD = $(pmix_libadd)
+-mpi_pmix_v4_la_LDFLAGS = $(pmix_ldflags) $(PMIX_V4_LDFLAGS)
+-mpi_pmix_v4_la_CPPFLAGS = $(AM_CPPFLAGS) $(PMIX_V4_CPPFLAGS) -DHAVE_PMIX_VER=4
+-
+-endif
+-
+-if HAVE_PMIX_V4
+-mpi_pmix_so := mpi_pmix_v4.so
+-else
+-
+-if HAVE_PMIX_V3
+-mpi_pmix_so := mpi_pmix_v3.so
+-else
+-
+-if HAVE_PMIX_V2
+-mpi_pmix_so := mpi_pmix_v2.so
+-
+-endif
+-endif
+-endif
+-
+-install-exec-hook:
+-	rm -rf $(DESTDIR)$(pkglibdir)/mpi_pmix.so
+-	$(LN_S) ./$(mpi_pmix_so)  $(DESTDIR)$(pkglibdir)/mpi_pmix.so
+-
+-uninstall-hook:
+-	rm -rf $(DESTDIR)$(pkglibdir)/mpi_pmix.so
++pkglib_dir=$(pkglibdir)
++pkglib_LTLIBRARIES = mpi_pmix.la
++mpi_pmix_la_SOURCES = $(pmix_src) pmixp_client_v2.c
++mpi_pmix_la_LIBADD = $(pmix_libadd)
++mpi_pmix_la_LDFLAGS = $(pmix_ldflags) $(PMIX_LDFLAGS)
++mpi_pmix_la_CPPFLAGS = $(AM_CPPFLAGS) $(PMIX_CPPFLAGS)
+diff --git a/src/plugins/mpi/pmix/mpi_pmix.c b/src/plugins/mpi/pmix/mpi_pmix.c
+index 79592f0cd3..70c58965a5 100644
+--- a/src/plugins/mpi/pmix/mpi_pmix.c
++++ b/src/plugins/mpi/pmix/mpi_pmix.c
+@@ -80,12 +80,7 @@
+  * minimum version for their plugins as this API matures.
+  */
+ const char plugin_name[] = "PMIx plugin";
+-
+-#if (HAVE_PMIX_VER == 2)
+-const char plugin_type[] = "mpi/pmix_v2";
+-#elif (HAVE_PMIX_VER == 3)
+-const char plugin_type[] = "mpi/pmix_v3";
+-#endif
++const char plugin_type[] = "mpi/pmix";
+ 
+ const uint32_t plugin_version = SLURM_VERSION_NUMBER;
+ 
+@@ -104,24 +99,13 @@ static void *_libpmix_open(void)
+ 	void *lib_plug = NULL;
+ 	char *full_path = NULL;
+ 
+-#ifdef PMIXP_V1_LIBPATH
+-	xstrfmtcat(full_path, "%s/", PMIXP_V1_LIBPATH);
+-#elif defined PMIXP_V2_LIBPATH
+-	xstrfmtcat(full_path, "%s/", PMIXP_V2_LIBPATH);
+-#elif defined PMIXP_V3_LIBPATH
+-	xstrfmtcat(full_path, "%s/", PMIXP_V3_LIBPATH);
+-#endif
++	xstrfmtcat(full_path, "%s/", PMIXP_LIBPATH);
+ 	xstrfmtcat(full_path, "libpmix.so");
+ 
+ 	lib_plug = dlopen(full_path, RTLD_LAZY | RTLD_GLOBAL);
+ 	xfree(full_path);
+ 
+-	if (lib_plug && (HAVE_PMIX_VER != pmixp_lib_get_version())) {
+-		PMIXP_ERROR("pmi/pmix: incorrect PMIx library version loaded %d was loaded, required %d version",
+-			    pmixp_lib_get_version(), (int)HAVE_PMIX_VER);
+-		_libpmix_close(lib_plug);
+-		lib_plug = NULL;
+-	}
++	debug("pmi/pmix: PMIx library version %d loaded", pmixp_lib_get_version());
+ 
+ 	return lib_plug;
+ }
+diff --git a/src/plugins/mpi/pmix/pmixp_client.c b/src/plugins/mpi/pmix/pmixp_client.c
+index 57bcd8eb9e..c98a6f0fd6 100644
+--- a/src/plugins/mpi/pmix/pmixp_client.c
++++ b/src/plugins/mpi/pmix/pmixp_client.c
+@@ -63,14 +63,6 @@
+ #define PMIXP_INFO_ARRAY_SET_ARRAY(kvp, _array) \
+ 	{ (kvp)->value.data.array.array = (pmix_info_t *)_array; }
+ 
+-
+-/* Check PMIx version */
+-#if (HAVE_PMIX_VER != PMIX_VERSION_MAJOR)
+-#define VALUE_TO_STRING(x) #x
+-#define VALUE(x) VALUE_TO_STRING(x)
+-#pragma message "PMIx version mismatch: the major version seen during configuration was " VALUE(HAVE_PMIX_VER) "L but found " VALUE(PMIX_VERSION_MAJOR) " compilation will most likely fail.  Please reconfigure against the new version."
+-#endif
+-
+ #define PMIXP_INFO_ARRAY_CREATE(kvp, _array, _count)			\
+ {									\
+ 	(kvp)->value.type = PMIX_DATA_ARRAY;				\
+diff --git a/src/plugins/mpi/pmix/pmixp_client.h b/src/plugins/mpi/pmix/pmixp_client.h
+index de7664b142..c626c0611c 100644
+--- a/src/plugins/mpi/pmix/pmixp_client.h
++++ b/src/plugins/mpi/pmix/pmixp_client.h
+@@ -38,6 +38,7 @@
+ #ifndef PMIXP_CLIENT_H
+ #define PMIXP_CLIENT_H
+ 
++#include <pmix.h>
+ #include "pmixp_common.h"
+ 
+ #ifdef PMIX_VALUE_LOAD

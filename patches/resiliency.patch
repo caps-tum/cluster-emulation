@@ -1,0 +1,20 @@
+diff --git a/src/slurmctld/node_mgr.c b/src/slurmctld/node_mgr.c
+index a86e529c33..759a784725 100644
+--- a/src/slurmctld/node_mgr.c
++++ b/src/slurmctld/node_mgr.c
+@@ -3820,7 +3820,14 @@ void set_node_down_ptr(node_record_t *node_ptr, char *reason)
+ 		}
+ 	}
+ 	_make_node_down(node_ptr, now);
+-	(void) kill_running_job_by_node_name(node_ptr->name);
++	if(strcmp(slurm_conf.schedtype, "deepsea") == 0){
++		// instead of using the default cancel and requeue algorithm,
++		// only mark the node down, and the deepsea scheduler will
++		// attempt a resiliency method if available
++		info("The deepsea scheduler will handle node timeouts/down");
++	} else {
++		(void) kill_running_job_by_node_name(node_ptr->name);
++	}
+ 	_sync_bitmaps(node_ptr, 0);
+ 
+ 	return;

@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=short-3
+#SBATCH --ntasks=24
+#SBATCH --time=00:01:30
+#SBATCH --output=output-%j.log  
+
+#pwd; hostname; date
+
+#echo "nodelist of this job (regex): ${SLURM_JOB_NODELIST}"
+#scontrol show hostname ${SLURM_JOB_NODELIST} > hostfile-${SLURM_JOB_ID}.txt
+#echo "Generated hostfile-${SLURM_JOB_ID}.txt:"
+#cat hostfile-${SLURM_JOB_ID}.txt
+
+drun -n 24 mpi_sleeper 60
+
+#date

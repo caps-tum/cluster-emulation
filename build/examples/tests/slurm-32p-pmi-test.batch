@@ -1,0 +1,7 @@
+#!/bin/bash
+#SBATCH --job-name=short-4
+#SBATCH --ntasks=32               
+#SBATCH --time=00:01:30
+#SBATCH --output=output-%j.log  
+
+drun -n 32 pmi_test 60
