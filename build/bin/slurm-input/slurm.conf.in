@@ -10,18 +10,18 @@ SlurmdLogFile=/var/log/slurmd.log
 TreeWidth=50
 #SlurmctldDebug=debug
 
-# deepsea selection
-SchedulerType=sched/deepsea
-#SelectType=select/deepsea
-#SwitchType=switch/deepsea
+# malleable plugins selection
+SchedulerType=sched/malleable
+#SelectType=select/malleable
+#SwitchType=switch/malleable
 # the launch/slurm plugin is broken upstream; no point in wrapping it at this moment
-#LaunchType=launch/deepsea
-#MpiDefault=deepsea
+#LaunchType=launch/malleable
+#MpiDefault=malleable
 
 # backfill scheduler settings
 SchedulerParameters=sched_interval=2,bf_interval=1,bf_max_time=5,bf_resolution=1
 
-# non-deepsea plugins
+# non-malleable plugins
 AuthType=auth/munge
 CredType=cred/munge
 #ProctrackType=proctrack/cgroup
