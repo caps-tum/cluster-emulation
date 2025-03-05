@@ -10,8 +10,6 @@
 
 FROM rockylinux:9
 
-MAINTAINER Isaias A. Compres U. <isaias.compres@tum.de>
-
 # ------------------------------------------------------------
 # Install required packages
 # ------------------------------------------------------------
@@ -112,6 +110,7 @@ USER root
 # Need to do this so that the 'mpiuser' can have them too, not just root
 RUN echo "export PMIX_ROOT=/opt/hpc/install/pmix" >> /etc/bashrc && \
     echo "export PRRTE_ROOT=/opt/hpc/install/prrte" >> /etc/bashrc  && \
+    echo "export RSCHED_ROOT=/opt/hpc/install/rsched" >> /etc/bashrc  && \
     echo "export OMPI_ROOT=/opt/hpc/install/ompi" >> /etc/bashrc  && \
     echo "export MPICH_ROOT=/opt/hpc/install/mpich" >> /etc/bashrc  && \
     echo "export PSCOM_ROOT=/opt/hpc/install/pscom" >> /etc/bashrc  && \
@@ -131,14 +130,14 @@ RUN echo "export PMIX_ROOT=/opt/hpc/install/pmix" >> /etc/bashrc && \
     echo "export PATH=\$SLURM_ROOT/sbin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$MUNGE_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$MUNGE_ROOT/sbin:\$PATH" >> /etc/bashrc  && \
-    echo "export PATH=\$PRRTE_ROOT/bin:\$MPI_ROOT/bin:\$PATH" >> /etc/bashrc  && \
+    echo "export PATH=\$PRRTE_ROOT/bin:\$PATH" >> /etc/bashrc  && \
+    echo "export PATH=\$RSCHED_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$GPI2_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$GSPC_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$MRNET_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export PATH=\$LIBDYNPM_ROOT/bin:\$PATH" >> /etc/bashrc  && \
     echo "export LD_LIBRARY_PATH=\$LIBEVENT_ROOT/lib:\$LD_LIBRARY_PATH" >> /etc/bashrc && \
     echo "export LD_LIBRARY_PATH=\$PSCOM_ROOT/lib64:\$LD_LIBRARY_PATH" >> /etc/bashrc && \
-    echo "export LD_LIBRARY_PATH=\$MPI_ROOT/lib:\$LD_LIBRARY_PATH" >> /etc/bashrc && \
     echo "export LD_LIBRARY_PATH=\$PMIX_ROOT/lib:\$LD_LIBRARY_PATH" >> /etc/bashrc && \
     echo "export LD_LIBRARY_PATH=\$PRRTE_ROOT/lib:\$LD_LIBRARY_PATH" >> /etc/bashrc && \
     echo "export LD_LIBRARY_PATH=\$GPI2_ROOT/lib64:\$LD_LIBRARY_PATH" >> /etc/bashrc && \

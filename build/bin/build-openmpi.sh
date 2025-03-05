@@ -19,5 +19,5 @@ ${source_dir}/configure --prefix=${OMPI_ROOT} \
             --with-slurm=yes \
             --enable-mpirun-prefix-by-default \
             2>&1 | tee configure.log.$$ 2>&1
-make -j 2>&1 | tee make.log.$$ 2>&1
+make -j 8 2>&1 | tee make.log.$$ 2>&1
 make -j install 2>&1 | tee make.install.log.$$

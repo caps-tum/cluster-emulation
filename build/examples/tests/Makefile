@@ -1,7 +1,7 @@
 CC=mpicc
 CFLAGS=-Wall -g -O0
 
-PROGS=init_finalize sinit_finalize mpi_sleeper session_mall pmi_test
+PROGS=init_finalize sinit_finalize mpi_sleeper session_mall pmi_test check_monitoring
 
 all: $(PROGS)
 
@@ -16,6 +16,9 @@ mpi_sleeper: mpi_sleeper.c
 
 session_mall: session_mall.c
 	$(CC) session_mall.c $(CFLAGS) -o session_mall
+
+check_monitoring: check_monitoring.c
+	$(CC) check_monitoring.c $(CFLAGS) -o check_monitoring
 
 pmi_test: pmi_test.c
 	$(CC) pmi_test.c $(CFLAGS) -o pmi_test \
